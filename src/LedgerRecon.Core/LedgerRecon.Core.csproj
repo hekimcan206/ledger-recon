@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>LedgerRecon.Core</RootNamespace>
+    <Description>Ledger rules and the reconciliation engine. No I/O: everything here is a pure function of its inputs.</Description>
+  </PropertyGroup>
+
+</Project>
