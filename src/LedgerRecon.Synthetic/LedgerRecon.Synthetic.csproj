@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>LedgerRecon.Synthetic</RootNamespace>
+    <Description>Seeded generator for synthetic ledger activity and matching card, EFT/FAST and MT940 files with injected defects.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bogus" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LedgerRecon.Core\LedgerRecon.Core.csproj" />
+  </ItemGroup>
+
+</Project>
