@@ -1,0 +1,88 @@
+# `docker compose up` runs the whole demo with zero manual steps:
+#   postgres  → initialised with least-privilege roles (deploy/postgres/init)
+#   migrator  → same image, `--migrate-only`, connects as the schema owner, exits
+#   seed      → same image, `--seed-demo`, connects as the application role, posts one synthetic business day
+#               and reconciles the three generated files, exits (idempotent: re-running changes nothing)
+#   api       → connects as the application role, serves the API and Scalar UI
+# Optional: `docker compose --profile observability up` adds the Aspire dashboard as an OTLP backend
+# (set OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889, see .env.example).
+name: ledger-recon
+
+x-api-image: &api-image
+  image: ledger-recon-api:local
+  build:
+    context: .
+    dockerfile: Dockerfile
+
+x-app-connection: &app-connection
+  ConnectionStrings__Default: Host=postgres;Database=ledger;Username=ledger_app;Password=${APP_PASSWORD:-app-dev-only};Timeout=5;Maximum Pool Size=${DB_POOL_SIZE:-50}
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ledger
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres-dev-only}
+      MIGRATOR_PASSWORD: ${MIGRATOR_PASSWORD:-migrator-dev-only}
+      APP_PASSWORD: ${APP_PASSWORD:-app-dev-only}
+    ports:
+      # Loopback only: lets `dotnet run` (appsettings.Development.json) and psql use this database.
+      - "127.0.0.1:${POSTGRES_PORT:-58532}:5432"
+    volumes:
+      - ./deploy/postgres/init:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ledger"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  migrator:
+    <<: *api-image
+    command: ["--migrate-only"]
+    environment:
+      ConnectionStrings__Default: Host=postgres;Database=ledger;Username=ledger_migrator;Password=${MIGRATOR_PASSWORD:-migrator-dev-only}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  seed:
+    <<: *api-image
+    command: ["--seed-demo"]
+    environment:
+      <<: *app-connection
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+    restart: "no"
+
+  api:
+    <<: *api-image
+    ports:
+      - "${API_PORT:-58180}:8080"
+    environment:
+      <<: *app-connection
+      Ledger__IsolationStrategy: ${LEDGER_ISOLATION:-RowLocks}
+      OpenApi__Enabled: "true"
+      OTEL_SERVICE_NAME: ledger-recon-api
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+    # No container HEALTHCHECK: the chiseled image has no shell or curl. Probe /health/live and /health/ready over HTTP.
+    restart: unless-stopped
+
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:13.6
+    profiles: ["observability"]
+    environment:
+      # Local-only convenience; never expose an unsecured dashboard beyond localhost.
+      DASHBOARD__FRONTEND__AUTHMODE: Unsecured
+      DASHBOARD__OTLP__AUTHMODE: Unsecured
+    ports:
+      - "127.0.0.1:58188:18888"
+
+volumes:
+  pgdata:
