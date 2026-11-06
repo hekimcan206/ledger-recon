@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/LedgerRecon.Api/LedgerRecon.Api.csproj" />
     <Project Path="src/LedgerRecon.Core/LedgerRecon.Core.csproj" />
+    <Project Path="src/LedgerRecon.Synthetic/LedgerRecon.Synthetic.csproj" />
   </Folder>
 </Solution>

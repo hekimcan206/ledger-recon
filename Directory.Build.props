@@ -10,8 +10,9 @@
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- CS1591: XML docs are generated for OpenAPI descriptions, not mandated on every public member. -->
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- CS1591: XML docs are generated for OpenAPI descriptions, not mandated on every public member.
+         CS1573: documenting only the non-obvious parameters of a record is deliberate. -->
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
 
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
