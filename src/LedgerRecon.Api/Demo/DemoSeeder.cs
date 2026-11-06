@@ -13,7 +13,7 @@ internal sealed class DemoOptions
 
     public DateOnly BusinessDate { get; set; } = new(2026, 11, 5);
 
-    public int TransactionsPerSource { get; set; } = 60;
+    public int TransactionsPerSource { get; set; } = 80;
 }
 
 /// <summary>

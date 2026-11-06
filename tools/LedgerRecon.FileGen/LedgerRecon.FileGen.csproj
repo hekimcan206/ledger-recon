@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <Description>Writes synthetic reconciliation files, ledger fixtures and approved reports (samples/ and golden tests).</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\LedgerRecon.Core\LedgerRecon.Core.csproj" />
+    <ProjectReference Include="..\..\src\LedgerRecon.Synthetic\LedgerRecon.Synthetic.csproj" />
+  </ItemGroup>
+
+</Project>
