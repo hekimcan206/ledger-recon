@@ -68,6 +68,9 @@ generated_code = true
 dotnet_diagnostic.IDE0005.severity = none
 
 [tests/**.cs]
+# Integration tests drive HTTP and Npgsql calls through small helpers; threading TestContext tokens through every one
+# adds noise without value for short-lived tests (a hung test is caught by the runner's timeout instead).
+dotnet_diagnostic.xUnit1051.severity = suggestion
 # xunit test names use underscores for readability.
 dotnet_diagnostic.CA1707.severity = none
 # Tests may intentionally pass literal strings / unused results.
