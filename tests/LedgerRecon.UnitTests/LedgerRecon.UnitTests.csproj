@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="FsCheck.Xunit.v3" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\LedgerRecon.Core\LedgerRecon.Core.csproj" />
+    <ProjectReference Include="..\..\src\LedgerRecon.Synthetic\LedgerRecon.Synthetic.csproj" />
+    <ProjectReference Include="..\..\src\LedgerRecon.Api\LedgerRecon.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Golden tests read the committed sample files and expected reports, so a behaviour change shows up as a diff. -->
+    <None Include="..\..\samples\**\*" Link="samples\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="AwesomeAssertions" />
+  </ItemGroup>
+
+</Project>
