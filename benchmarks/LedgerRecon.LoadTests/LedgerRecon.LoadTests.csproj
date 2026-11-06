@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <Description>NBomber load test for the posting endpoint (run against the docker compose stack; see docs/benchmarks.md).</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NBomber" />
+  </ItemGroup>
+
+</Project>

@@ -5,7 +5,11 @@
     <Project Path="src/LedgerRecon.Synthetic/LedgerRecon.Synthetic.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/LedgerRecon.IntegrationTests/LedgerRecon.IntegrationTests.csproj" />
     <Project Path="tests/LedgerRecon.UnitTests/LedgerRecon.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/LedgerRecon.LoadTests/LedgerRecon.LoadTests.csproj" />
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools/LedgerRecon.FileGen/LedgerRecon.FileGen.csproj" />
